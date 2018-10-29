@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, Text, View, RefreshControl } from 'react-native';
 
 import { getData, convertDataToJson } from './Utils';
 import styles from '../styles/styles';
@@ -13,6 +13,7 @@ export default class ShowPredictionsScreen extends Component {
       listOfTrips: [],
       listOfPredictions: [],
       timePredictionsRetrieved: undefined,
+      refreshing: false,
     }
     componentDidMount() {
       // Updates the predictions every 30 seconds
@@ -22,6 +23,11 @@ export default class ShowPredictionsScreen extends Component {
     componentWillUnmount() {
       clearInterval(this.interval);
     }
+    onRefresh = () => {
+      this.setState({refreshing: true});
+      this.getPredictions();
+      // Note: getPredictions() will set refreshing=false in the state
+    }
     getPredictions = () => {
       const { API_KEY } = this.props.screenProps;
       const { stopId, routeId, directionId } = this.props.navigation.state.params;
@@ -29,7 +35,7 @@ export default class ShowPredictionsScreen extends Component {
       getData(predictionUrl)
       .then(convertDataToJson)
       .then(this.processPredictionList)
-      .then(({listOfAlerts, listOfTrips, listOfPredictions, timePredictionsRetrieved}) => this.setState({listOfAlerts, listOfTrips, listOfPredictions, timePredictionsRetrieved}));
+      .then(({listOfAlerts, listOfTrips, listOfPredictions, timePredictionsRetrieved}) => this.setState({listOfAlerts, listOfTrips, listOfPredictions, timePredictionsRetrieved, refreshing: false,}));
     }
     processPredictionList = (jsonData) => {
       const listOfPredictions = [];
@@ -87,6 +93,12 @@ export default class ShowPredictionsScreen extends Component {
             <Text style={[styles.predictions_destination, styles.predictions_text]}>last updated {this.state.timePredictionsRetrieved && this.state.timePredictionsRetrieved.toString()}</Text>
           </View>
           <FlatList
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.onRefresh}
+              />
+            }
             data={this.state.listOfPredictions}
             renderItem={({item, index}) => (
               <View style={[styles.rows, styles.item, index%2===0 && styles.item_even]}>
