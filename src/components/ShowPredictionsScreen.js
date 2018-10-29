@@ -19,6 +19,9 @@ export default class ShowPredictionsScreen extends Component {
       this.getPredictions();
       this.interval = setInterval( () => this.getPredictions(), 30000);
     }
+    componentWillUnmount() {
+      clearInterval(this.interval);
+    }
     getPredictions = () => {
       const { API_KEY } = this.props.screenProps;
       const { stopId, routeId, directionId } = this.props.navigation.state.params;
