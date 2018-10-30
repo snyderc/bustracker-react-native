@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "FirstProject",
-    "description": "This project is really great.",
-    "slug": "FirstProject",
+    "name": "Boston Bus Tracker",
+    "description": "A simple, clean app interface to find your Boston bus.",
+    "slug": "BostonBusTracker",
     "privacy": "public",
     "sdkVersion": "30.0.0",
     "platforms": ["ios", "android"],

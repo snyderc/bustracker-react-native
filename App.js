@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import ManualStopSelectNavigator from './src/components/ManualStopSelectNavigator';
+import TopTabNavigator from './src/components/TopTabNavigator';
 
 export default class App extends Component {
   state = {
@@ -8,7 +9,7 @@ export default class App extends Component {
   }
   render() {
     return (
-      <ManualStopSelectNavigator
+      <TopTabNavigator
         screenProps={{'API_KEY': this.state.API_KEY}}
       />
     )

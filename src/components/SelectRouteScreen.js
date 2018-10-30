@@ -24,7 +24,7 @@ export default class SelectRouteScreen extends Component {
     jsonData.data.map( (route) => {
       listOfRoutes.push({
         'routeId': route.id,
-        'routeName': `${route.attributes.short_name} - ${route.attributes.long_name}`,
+        'routeName': `${route.attributes.short_name ? `${route.attributes.short_name} - ` : '' }${route.attributes.long_name}`,
       });
     });
     return listOfRoutes;
