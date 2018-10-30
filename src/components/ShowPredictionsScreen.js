@@ -24,9 +24,7 @@ export default class ShowPredictionsScreen extends Component {
       clearInterval(this.interval);
     }
     onRefresh = () => {
-      this.setState({refreshing: true});
-      this.getPredictions();
-      // Note: getPredictions() will set refreshing=false in the state
+      this.setState({refreshing: true}, this.getPredictions);
     }
     getPredictions = () => {
       const { API_KEY } = this.props.screenProps;
@@ -61,15 +59,28 @@ export default class ShowPredictionsScreen extends Component {
       // Then, process the list of Predictions
       jsonData.data.map( (prediction) => {
         listOfPredictions.push({
+          'directionId': prediction.attributes.direction_id,
           'tripId': prediction.relationships.trip.data.id,
           'departureTime': new Date(prediction.attributes.departure_time),
           'headsign': listOfTrips.get(prediction.relationships.trip.data.id).headsign
         });
       });
-      // Sort predictions by departure time low to high (ASC)
+      // Sort predictions by direction ID low to high (ASC) (for subway where both directions will be displayed)
+      // then by departure time low to high (ASC)
       listOfPredictions.sort( (a, b) => {
-        return a.departureTime - b.departureTime;
-      })
+        if (a.directionId < b.directionId) {
+          return -1;
+        }
+        else if (a.directionId > b.directionId) {
+          return 1;
+        }
+        if (a.departureTime < b.departureTime) {
+          return -1;
+        }
+        else if (a.departureTime > b.departureTime) {
+          return 1;
+        }
+      });
   
       return {listOfAlerts, listOfTrips, listOfPredictions, timePredictionsRetrieved};
     };
@@ -83,12 +94,12 @@ export default class ShowPredictionsScreen extends Component {
       }
     }
     render() {
-      const { routeName, stopName, directionName } = this.props.navigation.state.params;
+      const { routeName, stopName, directionId, directionName } = this.props.navigation.state.params;
       return (
         <View style={styles.container}>
           <View style={[styles.rows, {paddingBottom: 20}]}>
             <Text style={[styles.predictions_destination, styles.predictions_text]}>Route {routeName}</Text>
-            <Text style={[styles.predictions_destination, styles.predictions_text]}>toward {directionName}</Text>
+            { directionId !== -1 && <Text style={[styles.predictions_destination, styles.predictions_text]}>toward {directionName}</Text> }
             <Text style={[styles.predictions_destination, styles.predictions_text]}>from {stopName}</Text>
             <Text style={[styles.predictions_destination, styles.predictions_text]}>last updated {this.state.timePredictionsRetrieved && this.state.timePredictionsRetrieved.toString()}</Text>
           </View>

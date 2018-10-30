@@ -21,7 +21,12 @@ export class BusScreen extends React.Component {
     render() {
         return (
             <ManualStopSelectNavigator
-                screenProps={{'API_KEY': this.props.screenProps.API_KEY}}
+                screenProps={
+                    {
+                        'API_KEY': this.props.screenProps.API_KEY,
+                        routeType: 3
+                    }
+                }
             />
         )
     }
@@ -30,11 +35,14 @@ export class BusScreen extends React.Component {
 export class SubwayScreen extends React.Component {
     render() {
         return (
-            <View style={styles.container}>
-                <Text>
-                    Subway!
-                </Text>
-            </View>
+            <ManualStopSelectNavigator
+                screenProps={
+                    {
+                        'API_KEY': this.props.screenProps.API_KEY,
+                        routeType: '0,1'
+                    }
+                }
+            />
         )
     }
 }
@@ -42,11 +50,14 @@ export class SubwayScreen extends React.Component {
 export class CommuterRailScreen extends React.Component {
     render() {
         return (
-            <View style={styles.container}>
-                <Text>
-                    Commuter Rail!
-                </Text>
-            </View>
+            <ManualStopSelectNavigator
+                screenProps={
+                    {
+                        'API_KEY': this.props.screenProps.API_KEY,
+                        routeType: 2
+                    }
+                }
+            />
         )
     }
 }
@@ -54,11 +65,14 @@ export class CommuterRailScreen extends React.Component {
 export class FerryScreen extends React.Component {
     render() {
         return (
-            <View style={styles.container}>
-                <Text>
-                    Ferry!
-                </Text>
-            </View>
+            <ManualStopSelectNavigator
+                screenProps={
+                    {
+                        'API_KEY': this.props.screenProps.API_KEY,
+                        routeType: 4
+                    }
+                }
+            />
         )
     }
 }
