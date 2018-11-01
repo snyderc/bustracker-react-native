@@ -64,10 +64,10 @@ export class CommuterRailScreen extends React.Component {
 
 export default createBottomTabNavigator(
     {
-        Bus: BusScreen,
-        Subway: SubwayScreen,
+        'Bus': BusScreen,
+        'Subway': SubwayScreen,
         'Commuter Rail': CommuterRailScreen,
-        Geolocate: GeolocateScreen
+        'My Location': GeolocateScreen
     },
     {
         initialRouteName: 'Bus',
@@ -95,7 +95,7 @@ export default createBottomTabNavigator(
                 //     iconType = 'font-awesome';
                 //     iconColor = focused ? 'black' : 'gray';
                 // }
-                else if (routeName === 'Geolocate') {
+                else if (routeName === 'My Location') {
                     iconName = 'crosshairs';
                     iconType = 'font-awesome';
                     iconColor = focused ? 'black' : 'gray';
