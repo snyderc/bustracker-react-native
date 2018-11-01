@@ -8,9 +8,16 @@ export default class GeoPredictionsScreen extends React.Component {
     state = {
         predictions: [],
         timePredictionsRetrieved: undefined,
+        userLat: undefined,
+        userLong: undefined,
     }
+    RADIUS = 0.007  // 0.007 = approx 1/2 mile
     componentDidMount() {
         navigator.geolocation.getCurrentPosition(this.geoSuccess, this.geoError);
+        this.interval = setInterval( () => this.getPredictions(), 30000);
+    }
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
     // Calculates distance between two (x,y) points.
     getDistance = (lat1, long1, lat2, long2) => {
@@ -108,26 +115,27 @@ export default class GeoPredictionsScreen extends React.Component {
     geoSuccess = (data) => {
         const userLat = data.coords.latitude;
         const userLong = data.coords.longitude;
-        const radius = 0.007    // 0.007 = approx 1/2 mile
-        const routeUrl = `https://api-v3.mbta.com/predictions?api_key=${this.props.API_KEY}&filter[latitude]=${userLat}&filter[longitude]=${userLong}&filter[radius]=${radius}&include=stop,route,trip`
-        console.log(routeUrl);
-        getData(routeUrl)
+        this.setState({userLat, userLong}, this.getPredictions);
+    }
+    getPredictions = () => {
+        const predictionsUrl = `https://api-v3.mbta.com/predictions?api_key=${this.props.API_KEY}&filter[latitude]=${this.state.userLat}&filter[longitude]=${this.state.userLong}&filter[radius]=${this.RADIUS}&include=stop,route,trip`
+        console.log(predictionsUrl);
+        getData(predictionsUrl)
         .then(convertDataToJson)
         .then((jsonData) => {
-            return this.processGeolocatedPredictionsList(jsonData, userLat, userLong)
+            return this.processGeolocatedPredictionsList(jsonData, this.state.userLat, this.state.userLong)
         })
         .then((data) => {
             this.setState({
                 predictions: data,
                 timePredictionsRetrieved: new Date(Date.now())
             })
-        })
+        });
     }
     geoError = (err) => {
         console.log(err);
     }
     formatPrediction = (departureTime) => {
-        console.log(departureTime, this.state.timePredictionsRetrieved);
         const minutesToDeparture = Math.floor((departureTime - this.state.timePredictionsRetrieved) / 1000 / 60);
         if (minutesToDeparture > 0) {
           return `${minutesToDeparture} min`;
@@ -137,18 +145,24 @@ export default class GeoPredictionsScreen extends React.Component {
         }
       }
     render() {
-        console.log(this.state.timePredictionsRetrieved);
         return (
             <View style={styles.container}>
                 { !this.state.timePredictionsRetrieved && <ActivityIndicator size="large" color="#0000ff" /> }
+                { this.state.timePredictionsRetrieved &&
+                    <View style={[{paddingTop: 10, paddingBottom: 10}]}>
+                        <Text style={[styles.predictions_destination, styles.predictions_text]}>Here are predictions for routes near you!</Text>
+                        <Text style={[styles.predictions_destination, styles.predictions_text]}>Last updated {this.state.timePredictionsRetrieved.toString()}</Text>
+                    </View>
+                }
                 <FlatList
                     data={this.state.predictions}
                     renderItem={({item, index}) => (
                         <View>
-                            <Text style={[styles.item, styles.item_text]}>{item.routeId}</Text>
+                            <Text style={[{padding: 10}, styles.item_text, styles.item_even]}>{item.routeId}</Text>
                             { item.closestPredictions.map( (el, index) => (
-                                <View key={index}>
-                                    <Text>{this.formatPrediction(el.departureTime)} toward {el.headsign} from {el.stopName}</Text>
+                                <View style={{padding: 10}} key={index}>
+                                    <Text style={styles.item_text}>{this.formatPrediction(el.departureTime)} toward {el.headsign}</Text>
+                                    <Text>from {el.stopName}</Text>
                                 </View>
                             )) }
                         </View>

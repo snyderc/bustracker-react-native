@@ -14,6 +14,7 @@ export default class ShowPredictionsScreen extends Component {
       listOfPredictions: [],
       timePredictionsRetrieved: undefined,
       refreshing: false,
+      maxPredictionsToShow: 3,
     }
     componentDidMount() {
       // Updates the predictions every 30 seconds
@@ -81,6 +82,24 @@ export default class ShowPredictionsScreen extends Component {
           return 1;
         }
       });
+
+      // Limit prediction list to the max number of predictions.
+      // If both directions are represented, it will limit each direction to that max number.
+      const { directionId } = this.props.navigation.state.params;
+      // Case where both directions are present
+      if (directionId === -1) {
+        // Get first index in listOfPredictions for direction 0 and direction 1
+        const indexDirection0 = listOfPredictions.findIndex( el => el.directionId === 0 );
+        const indexDirection1 = listOfPredictions.findIndex( el => el.directionId === 1 );
+        const arraySliceDirection0 = indexDirection1 > this.state.maxPredictionsToShow ? listOfPredictions.slice(0, this.state.maxPredictionsToShow) : listOfPredictions.slice(0, indexDirection1);
+        const arraySliceDirection1 = listOfPredictions.length-indexDirection1 > this.state.maxPredictionsToShow ? listOfPredictions.slice(indexDirection1, indexDirection1+this.state.maxPredictionsToShow) : listOfPredictions.slice(indexDirection1, listOfPredictions.length);
+        listOfPredictions.splice(0, listOfPredictions.length, ...arraySliceDirection0, ...arraySliceDirection1);
+      }
+      else {
+        if (listOfPredictions.length > this.state.maxPredictionsToShow) {
+          listOfPredictions.splice(0, this.state.maxPredictionsToShow);
+        }
+      }
   
       return {listOfAlerts, listOfTrips, listOfPredictions, timePredictionsRetrieved};
     };
@@ -117,7 +136,7 @@ export default class ShowPredictionsScreen extends Component {
                   {this.formatPrediction(item.departureTime)}
                 </Text>
                 <Text style={[styles.predictions_text, styles.predictions_destination]}>
-                  Destination: {item.headsign}
+                  toward {item.headsign}
                 </Text>
               </View>
             )}

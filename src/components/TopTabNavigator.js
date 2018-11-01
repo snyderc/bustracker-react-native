@@ -62,27 +62,11 @@ export class CommuterRailScreen extends React.Component {
     }
 }
 
-export class FerryScreen extends React.Component {
-    render() {
-        return (
-            <ManualStopSelectNavigator
-                screenProps={
-                    {
-                        'API_KEY': this.props.screenProps.API_KEY,
-                        routeType: 4
-                    }
-                }
-            />
-        )
-    }
-}
-
 export default createBottomTabNavigator(
     {
         Bus: BusScreen,
         Subway: SubwayScreen,
         'Commuter Rail': CommuterRailScreen,
-        Ferry: FerryScreen,
         Geolocate: GeolocateScreen
     },
     {
@@ -106,11 +90,11 @@ export default createBottomTabNavigator(
                     iconType = 'font-awesome';
                     iconColor = focused ? 'black' : 'gray';
                 }
-                else if (routeName === 'Ferry') {
-                    iconName = 'ship';
-                    iconType = 'font-awesome';
-                    iconColor = focused ? 'black' : 'gray';
-                }
+                // else if (routeName === 'Ferry') {
+                //     iconName = 'ship';
+                //     iconType = 'font-awesome';
+                //     iconColor = focused ? 'black' : 'gray';
+                // }
                 else if (routeName === 'Geolocate') {
                     iconName = 'crosshairs';
                     iconType = 'font-awesome';
