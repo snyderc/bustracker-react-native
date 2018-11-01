@@ -95,9 +95,10 @@ export default class ShowPredictionsScreen extends Component {
         const arraySliceDirection1 = listOfPredictions.length-indexDirection1 > this.state.maxPredictionsToShow ? listOfPredictions.slice(indexDirection1, indexDirection1+this.state.maxPredictionsToShow) : listOfPredictions.slice(indexDirection1, listOfPredictions.length);
         listOfPredictions.splice(0, listOfPredictions.length, ...arraySliceDirection0, ...arraySliceDirection1);
       }
+      // Case where only one direction is present
       else {
         if (listOfPredictions.length > this.state.maxPredictionsToShow) {
-          listOfPredictions.splice(0, this.state.maxPredictionsToShow);
+          listOfPredictions.length = this.state.maxPredictionsToShow;
         }
       }
   

@@ -21,14 +21,38 @@ export default class SelectDirectionScreen extends Component {
       .then((listOfDirections) => this.setState({listOfDirections}));
     }
     processDirectionList = (jsonData) => {
-      const listOfDirections = [];
-      jsonData.data.map( (direction) => {
-        listOfDirections.push({
+      // Filter out duplicate direction names for a given ID
+      const directions = jsonData.data.map( (direction) => {
+        return {
           'directionId': direction.attributes.direction_id,
           'directionName': direction.attributes.name,
+          'directionConcat': `${direction.attributes.direction_id} ${direction.attributes.name}`
+        };
+      }).filter( (item, index, array) => {
+        return index === array.findIndex( (el) => {
+          return el.directionConcat === item.directionConcat;
         });
       });
-      // Group direction names together by direction type (inbound/outbound)
+      // Separate location names into Inbound or Outbound
+      const mapOfDirections = new Map();
+      directions.map( (el) => {
+        if (mapOfDirections.has(el.directionId)) {
+          mapOfDirections.set(el.directionId, `${mapOfDirections.get(el.directionId)} or ${el.directionName}`);
+        }
+        else {
+          mapOfDirections.set(el.directionId, el.directionName);
+        }
+      });
+      console.log(mapOfDirections);
+      // Turn the map into an array of objects that will be displayed by React
+      const listOfDirections = [];
+      for (let [key, value] of mapOfDirections) {
+        listOfDirections.push({
+          'directionId': key,
+          'directionName': value
+        })
+      }
+      // Sort so that direction 0 comes before direction 1 for consistency
       listOfDirections.sort( (a, b) => {
         return a.directionId - b.directionId;
       });
@@ -49,7 +73,7 @@ export default class SelectDirectionScreen extends Component {
         <View style={styles.container}>
           <FlatList
             data={this.state.listOfDirections}
-            renderItem={({item, index}) => <Text style={[styles.item, styles.item_text, index%2===0 && styles.item_even]} onPress={() => this.handleDirectionSelect(item)}>{item.directionName}</Text>}
+            renderItem={({item, index}) => <Text style={[{padding: 10}, styles.item_text, index%2===0 && styles.item_even]} onPress={() => this.handleDirectionSelect(item)}>{item.directionName}</Text>}
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
