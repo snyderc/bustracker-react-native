@@ -1,11 +1,9 @@
 import React from 'react';
-import { Text, View } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 
 import ManualStopSelectNavigator from './ManualStopSelectNavigator';
 import GeoPredictionsScreen from './GeoPredictionsScreen';
-import styles from '../styles/styles';
 
 export class GeolocateScreen extends React.Component {
     render() {
@@ -101,7 +99,7 @@ export default createBottomTabNavigator(
                     iconColor = focused ? 'black' : 'gray';
                 }
                 // Returns an icon to pair with the label
-                return <Icon type={iconType} name={iconName} color={iconColor} />
+                return <Icon name={iconName} type={iconType} color={iconColor} />
             }
         }),
         tabBarOptions: {
