@@ -145,15 +145,20 @@ export default class GeoPredictionsScreen extends React.Component {
         }
       }
     render() {
-        return (
-            <View style={styles.container}>
-                { !this.state.timePredictionsRetrieved && <ActivityIndicator size="large" color="#0000ff" /> }
-                { this.state.timePredictionsRetrieved &&
+        if (!this.state.timePredictionsRetrieved) {
+            return (
+                <View style={[styles.container, styles.geoContainer]}>
+                    <ActivityIndicator size="large" color="#0000ff" /> 
+                </View>
+            )
+        }
+        else {
+            return (
+                <View style={styles.container}>
                     <View style={[{paddingTop: 10, paddingBottom: 10}]}>
                         <Text style={[styles.predictions_destination, styles.predictions_text]}>Here are predictions for routes near you!</Text>
                         <Text style={[styles.predictions_destination, styles.predictions_text]}>Last updated {this.state.timePredictionsRetrieved.toString()}</Text>
                     </View>
-                }
                 <FlatList
                     data={this.state.predictions}
                     renderItem={({item, index}) => (
@@ -168,8 +173,9 @@ export default class GeoPredictionsScreen extends React.Component {
                         </View>
                     )}
                     keyExtractor={(item, index) => index.toString()}
-                />
-            </View>
-        )
+                    />
+                </View>
+            )
+        }
     }
 }

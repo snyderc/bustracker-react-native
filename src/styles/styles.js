@@ -6,6 +6,10 @@ export default styles = StyleSheet.create({
       flex: 1,
       paddingTop: 22
     },
+    geoContainer: {
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
     rows: {
       flexDirection: 'column',
       justifyContent: 'center',
