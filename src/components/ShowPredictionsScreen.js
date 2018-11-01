@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FlatList, Text, View, RefreshControl } from 'react-native';
 
-import { getData, convertDataToJson } from './Utils';
+import { getData, convertDataToJson, formatDate } from './Utils';
 import styles from '../styles/styles';
 
 export default class ShowPredictionsScreen extends Component {
@@ -120,7 +120,7 @@ export default class ShowPredictionsScreen extends Component {
             <Text style={[styles.predictions_destination, styles.predictions_text]}>Route {routeName}</Text>
             { directionId !== -1 && <Text style={[styles.predictions_destination, styles.predictions_text]}>toward {directionName}</Text> }
             <Text style={[styles.predictions_destination, styles.predictions_text]}>from {stopName}</Text>
-            <Text style={[styles.predictions_destination, styles.predictions_text]}>last updated {this.state.timePredictionsRetrieved && this.state.timePredictionsRetrieved.toString()}</Text>
+            <Text style={[styles.predictions_destination, styles.predictions_text]}>as of {this.state.timePredictionsRetrieved && formatDate(this.state.timePredictionsRetrieved)}</Text>
           </View>
           <FlatList
             refreshControl={

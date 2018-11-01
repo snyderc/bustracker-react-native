@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, FlatList, ActivityIndicator } from 'react-native';
 
-import { getData, convertDataToJson } from './Utils';
+import { getData, convertDataToJson, formatDate } from './Utils';
 import styles from '../styles/styles';
 
 export default class GeoPredictionsScreen extends React.Component {
@@ -157,7 +157,7 @@ export default class GeoPredictionsScreen extends React.Component {
                 <View style={styles.container}>
                     <View style={[{paddingTop: 10, paddingBottom: 10}]}>
                         <Text style={[styles.predictions_destination, styles.predictions_text]}>Here are predictions for routes near you!</Text>
-                        <Text style={[styles.predictions_destination, styles.predictions_text]}>Last updated {this.state.timePredictionsRetrieved.toString()}</Text>
+                        <Text style={[styles.predictions_destination, styles.predictions_text]}>as of {formatDate(this.state.timePredictionsRetrieved)}</Text>
                     </View>
                 <FlatList
                     data={this.state.predictions}
